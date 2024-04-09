@@ -12,6 +12,7 @@ type User struct {
 type Product struct {
 	ID          int       `json:"id"`
 	CreatedAt   time.Time `json:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	MainImage   string    `json:"mainImage"`

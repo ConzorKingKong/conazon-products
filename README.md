@@ -8,7 +8,7 @@ To test locally, setup a `.env` file in the root directory with the following va
 
 `DATABASEURL` - Url to postgres database. REQUIRED
 
-Datbase url should bne formatted this - 'host=localhost port=5432 user=postgres password={password} dbname={dbname} sslmode=disable'
+Datbase url should be formatted like this if using `docker-compose up` - 'host=postgres port=5432 user=postgres dbname=conazon sslmode=disable'
 
 Then run:
 

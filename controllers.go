@@ -56,7 +56,7 @@ func Products(w http.ResponseWriter, r *http.Request) {
 
 		for rows.Next() {
 			var row Product
-			err = rows.Scan(&row.ID, &row.CreatedAt, &row.Name, &row.Description, &row.MainImage, &row.Category, &row.Price, &row.Quantity, &row.Author)
+			err = rows.Scan(&row.ID, &row.CreatedAt, &row.UpdatedAt, &row.Name, &row.Description, &row.MainImage, &row.Category, &row.Price, &row.Quantity, &row.Author)
 			if err != nil {
 				log.Printf("Error scanning rows: %s", err)
 				w.Header().Set("Content-Type", "application/json")
@@ -96,7 +96,7 @@ func ProductId(w http.ResponseWriter, r *http.Request) {
 
 		Product := Product{}
 
-		err = conn.QueryRow(context.Background(), "select * from products.products where id=$1", parsedRouteId).Scan(&Product.ID, &Product.CreatedAt, &Product.Name, &Product.Description, &Product.MainImage, &Product.Category, &Product.Price, &Product.Quantity, &Product.Author)
+		err = conn.QueryRow(context.Background(), "select * from products.products where id=$1", parsedRouteId).Scan(&Product.ID, &Product.CreatedAt, &Product.UpdatedAt, &Product.Name, &Product.Description, &Product.MainImage, &Product.Category, &Product.Price, &Product.Quantity, &Product.Author)
 		if err != nil {
 			log.Printf("Error getting product with id %d - %s", parsedRouteId, err)
 			w.Header().Set("Content-Type", "application/json")
