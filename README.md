@@ -12,8 +12,7 @@ Datbase url should be formatted like this if using `docker-compose up` - 'host=p
 
 Then run:
 
-`go build .`
-`./conazon-products`
+`docker-compose up`
 
 ## Endpoints (later will have swagger)
 
