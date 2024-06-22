@@ -17,6 +17,7 @@ func routeIdHelper(w http.ResponseWriter, r *http.Request) (string, int, error) 
 	if err != nil {
 		log.Printf("Error parsing route id: %s", err)
 		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(GenericResponse{Status: http.StatusInternalServerError, Message: "Internal Service Error"})
 		return "", 0, err
 	}
@@ -26,7 +27,7 @@ func routeIdHelper(w http.ResponseWriter, r *http.Request) (string, int, error) 
 
 func Root(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(GenericResponse{Status: 200, Message: "hello world"})
+	json.NewEncoder(w).Encode(GenericResponse{Status: http.StatusOK, Message: "hello world"})
 }
 
 func Products(w http.ResponseWriter, r *http.Request) {
@@ -36,6 +37,7 @@ func Products(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Printf("Error connecting to database: %s", err)
 			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(GenericResponse{Status: http.StatusInternalServerError, Message: "Internal Service Error"})
 			return
 		}
@@ -46,6 +48,7 @@ func Products(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Printf("Error getting products: %s", err)
 			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(GenericResponse{Status: http.StatusInternalServerError, Message: "Internal Service Error"})
 			return
 		}
@@ -60,6 +63,7 @@ func Products(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Printf("Error scanning rows: %s", err)
 				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(http.StatusInternalServerError)
 				json.NewEncoder(w).Encode(GenericResponse{Status: http.StatusInternalServerError, Message: "Internal Service Error"})
 				return
 			}
@@ -72,7 +76,8 @@ func Products(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(GenericResponse{Status: 405, Message: "Method Not Allowed"})
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		json.NewEncoder(w).Encode(GenericResponse{Status: http.StatusMethodNotAllowed, Message: "Method Not Allowed"})
 		return
 	}
 }
@@ -88,6 +93,7 @@ func ProductId(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Printf("Error connecting to database: %s", err)
 			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(GenericResponse{Status: http.StatusInternalServerError, Message: "Internal Service Error"})
 			return
 		}
@@ -100,6 +106,7 @@ func ProductId(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Printf("Error getting product with id %d - %s", parsedRouteId, err)
 			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusNotFound)
 			json.NewEncoder(w).Encode(GenericResponse{Status: http.StatusNotFound, Message: "Product not found"})
 			return
 		}
@@ -109,7 +116,8 @@ func ProductId(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(Product)
 	} else {
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(GenericResponse{Status: 405, Message: "Method Not Allowed"})
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		json.NewEncoder(w).Encode(GenericResponse{Status: http.StatusMethodNotAllowed, Message: "Method Not Allowed"})
 		return
 	}
 }
