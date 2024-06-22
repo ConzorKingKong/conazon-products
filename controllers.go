@@ -16,7 +16,6 @@ func routeIdHelper(w http.ResponseWriter, r *http.Request) (string, int, error) 
 	parsedRouteId, err := strconv.Atoi(routeId)
 	if err != nil {
 		log.Printf("Error parsing route id: %s", err)
-		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(GenericResponse{Status: http.StatusInternalServerError, Message: "Internal Service Error"})
 		return "", 0, err
@@ -31,12 +30,12 @@ func Root(w http.ResponseWriter, r *http.Request) {
 }
 
 func Products(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	if r.Method == "GET" {
 		// get all products from db (pagination)
 		conn, err := pgx.Connect(context.Background(), DatabaseURLEnv)
 		if err != nil {
 			log.Printf("Error connecting to database: %s", err)
-			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(GenericResponse{Status: http.StatusInternalServerError, Message: "Internal Service Error"})
 			return
@@ -47,7 +46,6 @@ func Products(w http.ResponseWriter, r *http.Request) {
 		rows, err := conn.Query(context.Background(), "select * from products.products")
 		if err != nil {
 			log.Printf("Error getting products: %s", err)
-			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(GenericResponse{Status: http.StatusInternalServerError, Message: "Internal Service Error"})
 			return
@@ -62,7 +60,6 @@ func Products(w http.ResponseWriter, r *http.Request) {
 			err = rows.Scan(&row.ID, &row.CreatedAt, &row.UpdatedAt, &row.Name, &row.Description, &row.MainImage, &row.Category, &row.Price, &row.Quantity, &row.Author)
 			if err != nil {
 				log.Printf("Error scanning rows: %s", err)
-				w.Header().Set("Content-Type", "application/json")
 				w.WriteHeader(http.StatusInternalServerError)
 				json.NewEncoder(w).Encode(GenericResponse{Status: http.StatusInternalServerError, Message: "Internal Service Error"})
 				return
@@ -71,11 +68,9 @@ func Products(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// structure json response properly
-		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(rowSlice)
 		return
 	} else {
-		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		json.NewEncoder(w).Encode(GenericResponse{Status: http.StatusMethodNotAllowed, Message: "Method Not Allowed"})
 		return
@@ -83,6 +78,7 @@ func Products(w http.ResponseWriter, r *http.Request) {
 }
 
 func ProductId(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	_, parsedRouteId, err := routeIdHelper(w, r)
 	if err != nil {
 		return
@@ -92,7 +88,6 @@ func ProductId(w http.ResponseWriter, r *http.Request) {
 		conn, err := pgx.Connect(context.Background(), DatabaseURLEnv)
 		if err != nil {
 			log.Printf("Error connecting to database: %s", err)
-			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(GenericResponse{Status: http.StatusInternalServerError, Message: "Internal Service Error"})
 			return
@@ -105,17 +100,14 @@ func ProductId(w http.ResponseWriter, r *http.Request) {
 		err = conn.QueryRow(context.Background(), "select * from products.products where id=$1", parsedRouteId).Scan(&Product.ID, &Product.CreatedAt, &Product.UpdatedAt, &Product.Name, &Product.Description, &Product.MainImage, &Product.Category, &Product.Price, &Product.Quantity, &Product.Author)
 		if err != nil {
 			log.Printf("Error getting product with id %d - %s", parsedRouteId, err)
-			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusNotFound)
 			json.NewEncoder(w).Encode(GenericResponse{Status: http.StatusNotFound, Message: "Product not found"})
 			return
 		}
 
 		// structure json response properly
-		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(Product)
 	} else {
-		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		json.NewEncoder(w).Encode(GenericResponse{Status: http.StatusMethodNotAllowed, Message: "Method Not Allowed"})
 		return
