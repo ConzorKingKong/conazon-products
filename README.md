@@ -7,6 +7,7 @@ This is the products endpoint for the Conazon project.
 To test locally, setup a `.env` file in the root directory with the following variables:
 
 `DATABASEURL` - Url to postgres database. REQUIRED
+`PORT` - Port to run server on. Defaults to 8081
 
 Datbase url should be formatted like this if using `docker-compose up` - 'host=postgres port=5432 user=postgres dbname=conazon sslmode=disable'
 
