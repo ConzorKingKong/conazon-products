@@ -17,7 +17,7 @@ func routeIdHelper(w http.ResponseWriter, r *http.Request) (string, int, error) 
 	if err != nil {
 		log.Printf("Error parsing route id: %s", err)
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(GenericResponse{Status: http.StatusInternalServerError, Message: "Internal Service Error"})
+		json.NewEncoder(w).Encode(Response{Status: http.StatusInternalServerError, Message: "Internal Service Error", Data: ""})
 		return "", 0, err
 	}
 
@@ -26,7 +26,8 @@ func routeIdHelper(w http.ResponseWriter, r *http.Request) (string, int, error) 
 
 func Root(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(GenericResponse{Status: http.StatusOK, Message: "hello world"})
+	w.WriteHeader(http.StatusNotFound)
+	json.NewEncoder(w).Encode(Response{Status: http.StatusNotFound, Message: "invalid path" + r.URL.RequestURI(), Data: ""})
 }
 
 func Products(w http.ResponseWriter, r *http.Request) {
@@ -37,7 +38,7 @@ func Products(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Printf("Error connecting to database: %s", err)
 			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(GenericResponse{Status: http.StatusInternalServerError, Message: "Internal Service Error"})
+			json.NewEncoder(w).Encode(Response{Status: http.StatusInternalServerError, Message: "Internal Service Error", Data: ""})
 			return
 		}
 
@@ -47,7 +48,7 @@ func Products(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Printf("Error getting products: %s", err)
 			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(GenericResponse{Status: http.StatusInternalServerError, Message: "Internal Service Error"})
+			json.NewEncoder(w).Encode(Response{Status: http.StatusInternalServerError, Message: "Internal Service Error", Data: ""})
 			return
 		}
 
@@ -61,18 +62,17 @@ func Products(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Printf("Error scanning rows: %s", err)
 				w.WriteHeader(http.StatusInternalServerError)
-				json.NewEncoder(w).Encode(GenericResponse{Status: http.StatusInternalServerError, Message: "Internal Service Error"})
+				json.NewEncoder(w).Encode(Response{Status: http.StatusInternalServerError, Message: "Internal Service Error", Data: ""})
 				return
 			}
 			rowSlice = append(rowSlice, row)
 		}
 
-		// structure json response properly
-		json.NewEncoder(w).Encode(rowSlice)
+		json.NewEncoder(w).Encode(ProductsResponse{Status: http.StatusOK, Message: "Success", Data: rowSlice})
 		return
 	} else {
 		w.WriteHeader(http.StatusMethodNotAllowed)
-		json.NewEncoder(w).Encode(GenericResponse{Status: http.StatusMethodNotAllowed, Message: "Method Not Allowed"})
+		json.NewEncoder(w).Encode(Response{Status: http.StatusMethodNotAllowed, Message: "Method Not Allowed", Data: ""})
 		return
 	}
 }
@@ -89,7 +89,7 @@ func ProductId(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Printf("Error connecting to database: %s", err)
 			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(GenericResponse{Status: http.StatusInternalServerError, Message: "Internal Service Error"})
+			json.NewEncoder(w).Encode(Response{Status: http.StatusInternalServerError, Message: "Internal Service Error", Data: ""})
 			return
 		}
 
@@ -101,15 +101,15 @@ func ProductId(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Printf("Error getting product with id %d - %s", parsedRouteId, err)
 			w.WriteHeader(http.StatusNotFound)
-			json.NewEncoder(w).Encode(GenericResponse{Status: http.StatusNotFound, Message: "Product not found"})
+			json.NewEncoder(w).Encode(Response{Status: http.StatusNotFound, Message: "Product not found", Data: ""})
 			return
 		}
 
-		// structure json response properly
-		json.NewEncoder(w).Encode(Product)
+		json.NewEncoder(w).Encode(ProductResponse{Status: http.StatusOK, Message: "Success", Data: Product})
+		return
 	} else {
 		w.WriteHeader(http.StatusMethodNotAllowed)
-		json.NewEncoder(w).Encode(GenericResponse{Status: http.StatusMethodNotAllowed, Message: "Method Not Allowed"})
+		json.NewEncoder(w).Encode(Response{Status: http.StatusMethodNotAllowed, Message: "Method Not Allowed", Data: ""})
 		return
 	}
 }

@@ -28,7 +28,7 @@ func main() {
 	}
 
 	http.HandleFunc("/", Root)
-	http.HandleFunc("/products", Products)
+	http.HandleFunc("/products/", Products)
 	http.HandleFunc("/products/{id}", ProductId)
 
 	fmt.Println("server starting on port", PORT)
