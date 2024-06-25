@@ -9,7 +9,7 @@ To test locally, setup a `.env` file in the root directory with the following va
 `DATABASEURL` - Url to postgres database. REQUIRED
 `PORT` - Port to run server on. Defaults to 8081
 
-Datbase url should be formatted like this if using `docker-compose up` - 'host=postgres port=5432 user=postgres dbname=conazon sslmode=disable'
+Datbase url should be formatted like this if using `docker-compose` - 'host=postgres port=5432 user=postgres dbname=conazon sslmode=disable'
 
 Then run:
 
@@ -19,7 +19,7 @@ Then run:
 
 - /
 
-GET - generic hello world. useless endpoint
+GET - Catch all 404
 
 - /products
 
