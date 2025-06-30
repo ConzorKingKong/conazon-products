@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/conzorkingkong/conazon-products/config"
+	"github.com/conzorkingkong/conazon-products/controllers"
 	"github.com/joho/godotenv"
 )
 
@@ -19,6 +21,8 @@ func main() {
 	PORT, PORTExists = os.LookupEnv("PORT")
 	DatabaseURLEnv, DatabaseURLExists = os.LookupEnv("DATABASEURL")
 
+	config.DatabaseURLEnv = DatabaseURLEnv
+
 	if !DatabaseURLExists {
 		log.Fatal("Required environment variable not set")
 	}
@@ -27,9 +31,9 @@ func main() {
 		PORT = "8081"
 	}
 
-	http.HandleFunc("/", Root)
-	http.HandleFunc("/products/", Products)
-	http.HandleFunc("/products/{id}", ProductId)
+	http.HandleFunc("/", controllers.Root)
+	http.HandleFunc("/products/", controllers.Products)
+	http.HandleFunc("/products/{id}", controllers.ProductId)
 
 	fmt.Println("server starting on port", PORT)
 	http.ListenAndServe(":"+PORT, nil)
