@@ -7,17 +7,12 @@ import (
 	"net/http"
 
 	"github.com/conzorkingkong/conazon-products/config"
-	"github.com/conzorkingkong/conazon-products/helpers"
 	"github.com/conzorkingkong/conazon-products/types"
+	authhelpers "github.com/conzorkingkong/conazon-users-and-auth/helpers"
 	authtypes "github.com/conzorkingkong/conazon-users-and-auth/types"
 	"github.com/jackc/pgx/v5"
 )
 
-func Root(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusNotFound)
-	json.NewEncoder(w).Encode(authtypes.Response{Status: http.StatusNotFound, Message: "invalid path" + r.URL.RequestURI(), Data: ""})
-}
 
 func Products(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -68,7 +63,7 @@ func Products(w http.ResponseWriter, r *http.Request) {
 
 func ProductId(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	_, parsedRouteId, err := helpers.RouteIdHelper(w, r)
+	_, parsedRouteId, err := authhelpers.RouteIdHelper(w, r)
 	if err != nil {
 		return
 	}
