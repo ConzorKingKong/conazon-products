@@ -3,7 +3,7 @@ module github.com/conzorkingkong/conazon-products
 go 1.23.0
 
 require (
-	github.com/conzorkingkong/conazon-users-and-auth v0.0.0-20250630010039-47c5183eeb98
+	github.com/conzorkingkong/conazon-users-and-auth v0.0.0-20250630163739-9381b5e893d7
 	github.com/jackc/pgx/v5 v5.5.5
 	github.com/joho/godotenv v1.5.1
 )

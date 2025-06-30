@@ -36,6 +36,8 @@ func main() {
 	http.HandleFunc("/products/", controllers.Products)
 	http.HandleFunc("/products/{id}", controllers.ProductId)
 
+	http.HandleFunc("/healthz", authcontrollers.Healthz)
+
 	fmt.Println("server starting on port", PORT)
 	http.ListenAndServe(":"+PORT, nil)
 }
